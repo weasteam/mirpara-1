@@ -82,12 +82,14 @@ if ($species=~/^\./){#change the species name, if treat as model path, before pa
 	$species=~s/\.\///;
 	$species="$dir/$species";
 }
-my $tmp=$infile;
-$tmp=~s/\//,/g;
-my @tmp=split(",",$tmp);
-$dir=$infile;
-$infile=pop @tmp;
-$dir=~s/\/$infile//;
+if ($infile=~/\//){
+	my $tmp=$infile;
+	$tmp=~s/\//,/g;
+	my @tmp=split(",",$tmp);
+	$dir=$infile;
+	$infile=pop @tmp;
+	$dir=~s/\/$infile//;
+}
 $CWD = $dir;
 ##outfiles
 if ($infile=~/\.pmt/){
