@@ -1,0 +1,4 @@
+ct2out INSTALL (linux)
+
+1) gfortran ct2out.f -o ct2out or g77 -o ct2out ct2out.f
+2) cp ct2out to your path
