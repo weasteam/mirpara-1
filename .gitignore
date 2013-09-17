@@ -4,3 +4,5 @@ miRPara/models/
 training_parameters_*/
 *.md5
 *~
+miRPara/test/mirpara_parameters.txt
+miRPara/test/test*
