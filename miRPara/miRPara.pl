@@ -17,7 +17,7 @@ our $abname="unknown";#update to guess from file name
 our $species="overall";
 our $level=1;#default level 1
 our $prilengthlimit=60;
-our $version="6.2";
+our $version="6.3";
 our $foldlen=521;
 our $overlaplen=176;
 our $cutoff=0.8;#cutoff probabilities
@@ -73,6 +73,8 @@ my $infile=shift or die("Error: data not specified\nRun 'perl $0 -h' for help\n"
 ##working directory - rnafold output directory, svm predict directory
 $share=~s/\/$0//;
 $share=~s/\n//g;
+$share=~s/miRPara.pl//;
+$share=~s/\/$//;
 if ($infile=~/^\./){#change to full directory
 	$dir=~s/\/$//;
 	$infile=~s/\.\///;
@@ -919,16 +921,13 @@ sub candidates{
 			   #################################################################
 			   #output the parameters
 			   @pmt=pmt("all");
-			   my $printdata=$para{$pmt[0]};#create print data to avoid different cores write into the data at the same time
-			   #print {$fh{'pmt'}} "$para{$pmt[0]}";
-			   shift @pmt;
+			   my %printdata=();#create print data to avoid different cores write into the data at the same time
 			   foreach (@pmt){
-				  #print {$fh{'pmt'}} "\t$para{$_}";
-				  $printdata.="\t$para{$_}";
+				  $printdata{$pmt[0]}.="$para{$_}\t";
 			   }
-			   #print {$fh{'pmt'}} "\n";
-			   $printdata.="\n";
-			   print {$fh{'pmt'}} $printdata;
+			   $printdata{$pmt[0]}=~s/\t$//;
+			   $printdata{$pmt[0]}.="\n";
+			   print {$fh{'pmt'}} $printdata{$pmt[0]};
 			   #################################################################
 			   #miRNA prediction
 			   if ($onlypmt ne 1){#calculate the parameter only without prediction
