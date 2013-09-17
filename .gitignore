@@ -1,2 +1,6 @@
 miRPara_model_trainer/experimental/
 miRPara_model_trainer/miRBase/
+miRPara/models/
+training_parameters_*/
+*.md5
+*~
