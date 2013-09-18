@@ -23,6 +23,7 @@ $syspmt{'cutoff'}=0.8;#cutoff probabilities
 $syspmt{'onlypmt'}=0;#only calculate the pmt valude instead of do further prediction
 $syspmt{'svmmodel'}="";
 $syspmt{'share'}=abs_path($0);#absolute path, can not replace with $0;
+$syspmt{'cores'}=1;#number of cores to run
 my %options;
 promgramCheck();#program/environment, check existance of UNAFold.pl and ct2out
 ################################PROGROM START###################################
@@ -33,6 +34,7 @@ GetOptions \%options, 'version|v' => sub { version('miRPara.pl') },
 						'cutoff|c=f'=>\$syspmt{'cutoff'},
 						'foldlength|f=i'=>\$syspmt{'foldlen'},
 						'overlaplength|o=i'=>\$syspmt{'overlaplen'},
+						'threads|t=i'=>\$syspmt{'cores'},
 						'pmt'=>\$syspmt{'onlypmt'},
 						'prilengthlimit|p=i' => \$syspmt{'prilengthlimit'} or die("Type perl $0 -h for help!\n");
 #################################data prepare###################################
@@ -228,14 +230,29 @@ elsif ($infile =~/\.fa/){
 		$seq{$title}=$seq;
 	}
 	my @seq=keys(%seq);
-	foreach (@seq) {
-		unless ($pid = fork) {
-			unless (fork) {
-				system "perl $syspmt{'share'}/miRPara_split_seq.pl $dir/mirpara_parameters.txt $_ $seq{$_}";
+	my $noseq=@seq;
+	my $whichseq=1;
+	my @childs=();#child programs
+	while ($whichseq<=$noseq) {
+		for ( my $count = 1; $count <= $syspmt{'cores'}; $count++) {
+			my $pid = fork();
+			if ($pid) {# parent
+				push(@childs, $pid);
+				print "Start pid $pid\n";
 			}
-			exit 0;
+			elsif ($pid == 0) {# child
+				system "perl $syspmt{'share'}/miRPara_split_seq.pl $dir/mirpara_parameters.txt $seq[$whichseq] $seq{$seq[$whichseq]}";
+			    exit 0;
+			} else {
+				die "couldnt fork: $!\n";
+			}
+			$whichseq++;
 		}
-		waitpid($pid, 0);
+		foreach (@childs) {
+			my $tmp = waitpid($_, 0);
+			print "Done with pid $tmp\n";
+		}
+		@childs=();
 	}
 }#whether only calculate the parameter
 else{
@@ -264,6 +281,7 @@ Options:
 -p, --prilengthlimit=<limit to the pri-miRNA length> (defaults to 60)
 -f, --foldlength=<The length to be split for folding> (defaults to 500)
 -o, --overlaplength=<The overlap length of two nearby splited fragments> (defaults to 150)
+-t, --threads=<No. of threads> (defaults to 1)
 --pmt, --Only calculate the parameters without further prediction
 
 File (one of following):
