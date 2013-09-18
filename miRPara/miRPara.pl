@@ -4,8 +4,6 @@
 #################################USE############################################
 use warnings;
 #use strict;
-use threads;
-use threads::shared;
 use Cwd qw(abs_path);
 use Cwd;
 use File::chdir;
@@ -157,15 +155,12 @@ if ($onlypmt ne 1){
 }
 our %mirbase;#mirbase blast
 our %organisms;#species group name
-share(%mirbase);#share the data among different cores
-share(%organisms);
 %mirbase=mirbase();
 %organisms=organisms();
 ##################################start#########################################
 #1	generate the sequences;
 #2	do split
 our %fh;#the file handles
-share(%fh);#share the file handle among different cores
 ################################################################################
 #output the predict results
 $fh{'out'}="OUT";
@@ -228,19 +223,15 @@ elsif ($infile =~/\.fa/){
 	open (IN,$infile) or die ("Error: $infile does not exist!\n");
 	my $title;
 	my $seq="";
+	my %seq=();
 	while (<IN>){
 		$_=~s/[\n\r]//g;
 		if ($_=~/^>/){
 			if ($seq ne ""){
-				#######################################################################
-				#split the whole sequence into small fragments
-				#$pm->start and next; # do the fork
-				dosplit($title,$seq);
+				$seq{$title}=$seq;
 			}
 			$_=~s/>//;
-			$_=~s/[\s\|]/,/g;
-			my @tmp=split(",",$_);
-			$title=$tmp[0];
+			$title=$_;
 			$seq="";
 		}
 		else{
@@ -252,42 +243,68 @@ elsif ($infile =~/\.fa/){
 	}
 	close IN;
 	if ($seq ne ""){#the last sequences
-		#######################################################################
-		#split the whole sequence into small fragments
-		#$pm->start and next; # do the fork
-		dosplit($title,$seq);
+		$seq{$title}=$seq;
 	}
+    my @seq=keys(%seq);
+    my $noseq=@seq;
+    my $whichseq=1;
+    my @childs=();#child programs
+    while ($whichseq<=$noseq) {
+        for ( my $count = 1; $count <= $cores; $count++) {
+        	if ($whichseq<=$noseq){
+                my $pid = fork();
+                if ($pid) {# parent
+                    push(@childs, $pid);
+                    print "Start pid $pid\n";
+                }
+                elsif ($pid == 0) {# child
+                	my $tmp=$seq[$whichseq-1];
+					$tmp=~s/[\s\|]/,/g;
+					my @tmp=split(",",$tmp);
+                	%splittedseq=dosplit($tmp[0],$seq{$seq[$whichseq-1]});
+                    exit 0;
+                } else {
+                    die "couldnt fork: $!\n";
+                }
+                $whichseq++;
+        	}
+        }
+        foreach (@childs) {
+                my $tmp = waitpid($_, 0);
+                print "Done with pid $tmp\n";
+        }
+        @childs=();
+    }
+    @seq=();
+    %seq=();
 	############################################################################
 	#now all the splitted sequences is ready,need to validate the seq
 	my @splittedseq=keys(%splittedseq);
-	share(%validatedseq);#share the data for different threads
-	for (my $run=0;$run<@splittedseq;$run=$run+$cores){
-		my %thr=();
-		for (my $i=0;$i<$cores;$i++){
-			if (($run+$i)<@splittedseq){
-				#optimizeseq($splittedseq[$run+$i],$splittedseq{$splittedseq[$run+$i]});
-				$thr{"thr$run"} = threads->create("optimizeseq",$splittedseq[$run+$i],$splittedseq{$splittedseq[$run+$i]});
-			}
-		}
-		my @run=keys (%thr);
-		foreach (@run){
-			$thr{$_} ->join();
-		}
-		runningcheck1:
-		my @running = threads->list(threads::running);
-		if (@running>0){
-			my $tmp=@running;
-			print "Waiting for $tmp unfinished threads...\n";
-			sleep(1);
-			goto runningcheck1;
-		}
-		my @joinable = threads->list(threads::joinable);
-		if (@joinable>0){
-			foreach (@joinable){
-				$_->join();
-			}
-		}
-	}
+	print "$splittedseq[0]\n";
+    $noseq=@splittedseq;
+    $whichseq=1;
+    @childs=();#child programs
+    while ($whichseq<=$noseq) {
+        for ( my $count = 1; $count <= $cores; $count++) {
+                my $pid = fork();
+                if ($pid) {# parent
+                    push(@childs, $pid);
+                    print "Start pid $pid\n";
+                }
+                elsif ($pid == 0) {# child
+                	optimizeseq($splittedseq[$whichseq],$splittedseq{$splittedseq[$whichseq]});
+                    exit 0;
+                } else {
+                    die "couldnt fork: $!\n";
+                }
+                $whichseq++;
+        }
+        foreach (@childs) {
+                my $tmp = waitpid($_, 0);
+                print "Done with pid $tmp\n";
+        }
+        @childs=();
+    }
 	#clear the memery
 	%splittedseq=();
 	@splittedseq=();
@@ -303,39 +320,35 @@ elsif ($infile =~/\.fa/){
 	}
 	print {$fh{'pmt'}} "\n";
 	my @validatedseq=keys (%validatedseq);
-	for (my $run=0;$run<@validatedseq;$run=$run+$cores){
-		my %thr=();
-		for (my $i=0;$i<$cores;$i++){
-			if (($run+$i)<@validatedseq){
-				my @tmp=split("_",$validatedseq[$run+$i]);
-				my $priseq=$tmp[1];
-				@tmp=split(",",$validatedseq{$validatedseq[$run+$i]});
-				my $title=shift @tmp;
-				my $mfe=shift @tmp;
-				#candidates($title,$priseq,$mfe,@tmp);
-				$thr{"thr$run"} = threads->create("candidates",$title,$priseq,$mfe,@tmp);
-			}
-		}
-		my @run=keys (%thr);
-		foreach (@run){
-			$thr{$_}->join();
-		}
-		runningcheck2:
-		my @running = threads->list(threads::running);
-		if (@running>0){
-			my $tmp=@running;
-			print "Waiting for $tmp unfinished threads...\n";
-			sleep(1);
-			goto runningcheck2;
-		}
-		my @joinable = threads->list(threads::joinable);
-		if (@joinable>0){
-			foreach (@joinable){
-				$_->join();
-			}
-		}
-	}
-	#my @run=keys (%thr);
+    $noseq=@validatedseq;
+    $whichseq=1;
+    @childs=();#child programs
+    while ($whichseq<=$noseq) {
+        for ( my $count = 1; $count <= $cores; $count++) {
+                my $pid = fork();
+                if ($pid) {# parent
+                    push(@childs, $pid);
+                    print "Start pid $pid\n";
+                }
+                elsif ($pid == 0) {# child
+					my @tmp=split("_",$validatedseq[$whichseq]);
+					my $priseq=$tmp[1];
+					@tmp=split(",",$validatedseq{$validatedseq[$whichseq]});
+					my $title=shift @tmp;
+					my $mfe=shift @tmp;
+                	candidates($title,$priseq,$mfe,@tmp);
+                    exit 0;
+                } else {
+                    die "couldnt fork: $!\n";
+                }
+                $whichseq++;
+        }
+        foreach (@childs) {
+                my $tmp = waitpid($_, 0);
+                print "Done with pid $tmp\n";
+        }
+        @childs=();
+    }
 	#candidates("$title\_$tmp",$priseq,$mfe,@str);
 	close $fh{'pmt'};
 }#whether only calculate the parameter
@@ -431,6 +444,7 @@ sub dosplit{
 		$splitseq=substr($seq,$pstart[$i-1]-1,$pend[$i-1]-$pstart[$i-1]+1);
 		$splittedseq{"$title\_$pstart[$i-1]\_$pend[$i-1]"}=$splitseq;
 	}
+	
 }
 sub optimizeseq{
 	#the script will optimize the input sequences and collect the required informaiton
