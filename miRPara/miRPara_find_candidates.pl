@@ -402,6 +402,7 @@ for ($para{'mistart'}=1;$para{'mistart'}<=$para{'prilength'};$para{'mistart'}+=1
 }#end of for ($para{'mistart'}=1;$para{'mistart'}<=length($para{'priseq'});$para{'mistart'}+=1)
 close PMT;
 close OUT;
+exit;
 sub gc{#parameter
 	#===========The gc was used to generate gc content of given seq
 	my $seq;#receive the sequences

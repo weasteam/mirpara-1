@@ -80,6 +80,7 @@ if ($rst>=$syspmt{'cutoff'}){
 	print OUT "$para{'priid'}\t$para{'priseq'}\t$para{'miid'}\t$para{'miseq'}\t$para{'strand'}P\t$rst\t$mirbase\n";
 	close OUT;
 }
+exit;
 sub pmt{
    #>>>>>>>>>>>>>>>>>>>>>>>>>>INTRODUCTION<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
    #===========The pmt was used to provide pmt files

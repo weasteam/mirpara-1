@@ -45,6 +45,7 @@ for (my $i=1;$i<=@pstart;$i+=1){
 	#optimize the sequence from here
 	system "perl $syspmt{'share'}/miRPara_optimize_seq.pl $syspmt $title\_$pstart[$i-1]\_$pend[$i-1] $splitseq";
 }
+exit;
 sub syspmt{
 	my ($syspmt)=@_;
 	open (IN,"$syspmt") or die "Error: not fount $syspmt\n";

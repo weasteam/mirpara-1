@@ -71,6 +71,7 @@ if (@strdata ne 0){#if the secondary structure could be generated
 		$line+=1;
 	}
 }
+exit;
 sub dofold{
    #	to generate the secondary structure
    #1	received a title and a cuted ~500 seq;

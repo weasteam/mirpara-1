@@ -157,7 +157,7 @@ if ($step !~/,2,/){
 	goto step3;
 }
 print "Calculating the parameters...";
-system "perl $mirpara -t $cores --pmt ./experimental/miRBase_$version\_experimental_overall.fasta";
+system "perl $mirpara --pmt ./experimental/miRBase_$version\_experimental_overall.fasta";
 print "Done\n";
 ################################################################################
 #step3	generate the parameters for training
