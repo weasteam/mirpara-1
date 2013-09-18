@@ -4,6 +4,8 @@
 #################################USE############################################
 use warnings;
 #use strict;
+use threads;
+use threads::shared;
 use Cwd qw(abs_path);
 use Cwd;
 use File::chdir;
@@ -155,12 +157,15 @@ if ($onlypmt ne 1){
 }
 our %mirbase;#mirbase blast
 our %organisms;#species group name
+share(%mirbase);#share the data among different cores
+share(%organisms);
 %mirbase=mirbase();
 %organisms=organisms();
 ##################################start#########################################
 #1	generate the sequences;
 #2	do split
 our %fh;#the file handles
+share(%fh);#share the file handle among different cores
 ################################################################################
 #output the predict results
 $fh{'out'}="OUT";
@@ -187,6 +192,12 @@ print {$fh{'out'}} qq{#miRNA results predicted by miRPara$version
 #pmt file prediction
 our %splittedseq;#name->seq
 our %validatedseq;#title_seq -> title:start-end,mfe,$str[0],$str[1],$str[2],$str[3],$str[4]
+share(%splittedseq);
+share(%validatedseq);
+our @pmtdata;#printable pmtdata
+share(@pmtdata);
+our @rstdata;#printable result data
+share(@rstdata);
 if ($infile =~ /\.pmt/){
    my %para;
    my $dat;
@@ -223,93 +234,72 @@ elsif ($infile =~/\.fa/){
 	open (IN,$infile) or die ("Error: $infile does not exist!\n");
 	my $title;
 	my $seq="";
-	my %seq=();
-	while (<IN>){
-		$_=~s/[\n\r]//g;
-		if ($_=~/^>/){
-			if ($seq ne ""){
-				$seq{$title}=$seq;
-			}
-			$_=~s/>//;
-			$title=$_;
-			$seq="";
-		}
-		else{
-			$_=~s/\s+//g;
-			$_=lc($_);
-			$_=~s/t/u/g;
-			$seq.=$_;
-		}
-	}
-	close IN;
-	if ($seq ne ""){#the last sequences
-		$seq{$title}=$seq;
-	}
-    my @seq=keys(%seq);
-    my $noseq=@seq;
-    my $whichseq=1;
-    my @childs=();#child programs
-    while ($whichseq<=$noseq) {
-        for ( my $count = 1; $count <= $cores; $count++) {
-        	if ($whichseq<=$noseq){
-                my $pid = fork();
-                if ($pid) {# parent
-                    push(@childs, $pid);
-                    print "Start pid $pid\n";
-                }
-                elsif ($pid == 0) {# child
-                	my $tmp=$seq[$whichseq-1];
-					$tmp=~s/[\s\|]/,/g;
-					my @tmp=split(",",$tmp);
-                	%splittedseq=dosplit($tmp[0],$seq{$seq[$whichseq-1]});
-                    exit 0;
-                } else {
-                    die "couldnt fork: $!\n";
-                }
-                $whichseq++;
-        	}
-        }
-        foreach (@childs) {
-                my $tmp = waitpid($_, 0);
-                print "Done with pid $tmp\n";
-        }
-        @childs=();
+    my %seq=();
+    while (<IN>){
+            $_=~s/[\n\r]//g;
+            if ($_=~/^>/){
+                    if ($seq ne ""){
+                            $seq{$title}=$seq;
+                    }
+                    $_=~s/>//;
+                    $title=$_;
+                    $seq="";
+            }
+            else{
+                    $_=~s/\s+//g;
+                    $_=lc($_);
+                    $_=~s/t/u/g;
+                    $seq.=$_;
+            }
     }
-    @seq=();
-    %seq=();
+    close IN;
+    if ($seq ne ""){#the last sequences
+            $seq{$title}=$seq;
+    }
+    my @seq=keys(%seq);
+    foreach (@seq){
+        my $tmp=$_;
+        $tmp=~s/[\s\|]/,/g;
+        my @tmp=split(",",$tmp);
+        dosplit($tmp[0],$seq{$_});
+    }
 	############################################################################
 	#now all the splitted sequences is ready,need to validate the seq
 	my @splittedseq=keys(%splittedseq);
-	print "$splittedseq[0]\n";
-    $noseq=@splittedseq;
-    $whichseq=1;
-    @childs=();#child programs
-    while ($whichseq<=$noseq) {
-        for ( my $count = 1; $count <= $cores; $count++) {
-                my $pid = fork();
-                if ($pid) {# parent
-                    push(@childs, $pid);
-                    print "Start pid $pid\n";
-                }
-                elsif ($pid == 0) {# child
-                	optimizeseq($splittedseq[$whichseq],$splittedseq{$splittedseq[$whichseq]});
-                    exit 0;
-                } else {
-                    die "couldnt fork: $!\n";
-                }
-                $whichseq++;
-        }
-        foreach (@childs) {
-                my $tmp = waitpid($_, 0);
-                print "Done with pid $tmp\n";
-        }
-        @childs=();
-    }
+	share(%validatedseq);#share the data for different threads
+	my $splitcount=@splittedseq;
+	for (my $run=0;$run<@splittedseq;$run=$run+$cores){
+		my %thr=();
+		my $current;
+		for (my $i=0;$i<$cores;$i++){
+			if (($run+$i)<@splittedseq){
+				$current=$run+$i+1;
+				#optimizeseq($splittedseq[$run+$i],$splittedseq{$splittedseq[$run+$i]});
+				$thr{"thr$run"} = threads->create("optimizeseq",$splittedseq[$run+$i],$splittedseq{$splittedseq[$run+$i]});
+			}
+		}
+		print "processing $current of $splitcount splitted sequences...\n";
+		my @run=keys (%thr);
+		foreach (@run){
+			$thr{$_} ->join();
+		}
+		runningcheck1:
+		my @running = threads->list(threads::running);
+		if (@running>0){
+			my $tmp=@running;
+			#print "Waiting for $tmp unfinished threads...\n";
+			sleep(0.5);
+			goto runningcheck1;
+		}
+		my @joinable = threads->list(threads::joinable);
+		if (@joinable>0){
+			foreach (@joinable){
+				$_->join();
+			}
+		}
+	}
 	#clear the memery
-	%splittedseq=();
-	@splittedseq=();
-	############################################################################
-	#ok, time for prediction
+	print "outputing the parameter data...\n";
 	open ($fh{'pmt'},">$outfilepmt");
 	#print the titile of parameter
 	my @pmt=pmt("all");
@@ -319,41 +309,17 @@ elsif ($infile =~/\.fa/){
 	  print {$fh{'pmt'}} "\t$_";
 	}
 	print {$fh{'pmt'}} "\n";
-	my @validatedseq=keys (%validatedseq);
-    $noseq=@validatedseq;
-    $whichseq=1;
-    @childs=();#child programs
-    while ($whichseq<=$noseq) {
-        for ( my $count = 1; $count <= $cores; $count++) {
-                my $pid = fork();
-                if ($pid) {# parent
-                    push(@childs, $pid);
-                    print "Start pid $pid\n";
-                }
-                elsif ($pid == 0) {# child
-					my @tmp=split("_",$validatedseq[$whichseq]);
-					my $priseq=$tmp[1];
-					@tmp=split(",",$validatedseq{$validatedseq[$whichseq]});
-					my $title=shift @tmp;
-					my $mfe=shift @tmp;
-                	candidates($title,$priseq,$mfe,@tmp);
-                    exit 0;
-                } else {
-                    die "couldnt fork: $!\n";
-                }
-                $whichseq++;
-        }
-        foreach (@childs) {
-                my $tmp = waitpid($_, 0);
-                print "Done with pid $tmp\n";
-        }
-        @childs=();
-    }
-	#candidates("$title\_$tmp",$priseq,$mfe,@str);
+	foreach (@pmtdata){
+		print {$fh{'pmt'}} $_;
+	}
 	close $fh{'pmt'};
 }#whether only calculate the parameter
 else{
    die "Error: data format unrecongnized,\nRun 'miRPara.pl -h' for help\n";
+}
+print "outputing the prediction result...\n";
+foreach (@rstdata){
+	print {$fh{'out'}} $_;
 }
 close $fh{'out'};
 #calculate the parameters only
@@ -444,12 +410,11 @@ sub dosplit{
 		$splitseq=substr($seq,$pstart[$i-1]-1,$pend[$i-1]-$pstart[$i-1]+1);
 		$splittedseq{"$title\_$pstart[$i-1]\_$pend[$i-1]"}=$splitseq;
 	}
-	
 }
 sub optimizeseq{
 	#the script will optimize the input sequences and collect the required informaiton
 	my ($title,$seq)=@_;
-	print "Optimizing sequences for $title...\n";
+	#print "Optimizing sequences for $title...\n";
 	my @strdata=dofold($seq);#do UNAfolding
 	my @tmp=split("_",$title);
 	my $subtitle=$tmp[0];
@@ -483,6 +448,7 @@ sub optimizeseq{
 						$tmp[1]+=index($seq,$priseq);
 						$tmp[2]=$tmp[1]+length($priseq)-1;
 						$validatedseq{"$subtitle\_$priseq"}="$subtitle\:$tmp[1]-$tmp[2],$mfe,$str[0],$str[1],$str[2],$str[3]";
+						candidates("$subtitle\:$tmp[1]-$tmp[2]",$priseq,$mfe,($str[0],$str[1],$str[2],$str[3]));
 					}
 				}
 			}
@@ -935,17 +901,18 @@ sub candidates{
 			   #################################################################
 			   #output the parameters
 			   @pmt=pmt("all");
-			   my %printdata=();#create print data to avoid different cores write into the data at the same time
+			   my $printdata="";#create print data to avoid different cores write into the data at the same time
 			   foreach (@pmt){
-				  $printdata{$pmt[0]}.="$para{$_}\t";
+				  $printdata.="$para{$_}\t";
 			   }
-			   $printdata{$pmt[0]}=~s/\t$//;
-			   $printdata{$pmt[0]}.="\n";
-			   print {$fh{'pmt'}} $printdata{$pmt[0]};
+			   $printdata=~s/\t$//;
+			   $printdata.="\n";
+			   #print {$fh{'pmt'}} $printdata{$pmt[0]};
+			   push (@pmtdata,$printdata);
 			   #################################################################
 			   #miRNA prediction
 			   if ($onlypmt ne 1){#calculate the parameter only without prediction
-				  print "Predicting for $para{'miid'}...\n";
+				  #print "Predicting for $para{'miid'}...\n";
 				  predict(%para);
 			   }
 			   pripredictfail:
@@ -1314,7 +1281,8 @@ sub predict{
 	  else{
 		 $mirbase="";
 	  }
-	  print {$fh{'out'}} "$para{'priid'}\t$para{'priseq'}\t$para{'miid'}\t$para{'miseq'}\t$para{'strand'}P\t$rst\t$mirbase\n";
+	  push (@rstdata,"$para{'priid'}\t$para{'priseq'}\t$para{'miid'}\t$para{'miseq'}\t$para{'strand'}P\t$rst\t$mirbase\n");
+	  #print {$fh{'out'}} "$para{'priid'}\t$para{'priseq'}\t$para{'miid'}\t$para{'miseq'}\t$para{'strand'}P\t$rst\t$mirbase\n";
    }
 }
 sub mirbase{
