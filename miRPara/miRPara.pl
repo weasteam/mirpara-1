@@ -268,9 +268,15 @@ elsif ($infile =~/\.fa/){
 	my @splittedseq=keys(%splittedseq);
 	share(%validatedseq);#share the data for different threads
 	my $splitcount=@splittedseq;
+	my $tstart=time();
+	my $tend=time();
+	my $start=time();
+	my @timediff=();
+	my $meandiff=0;
 	for (my $run=0;$run<@splittedseq;$run=$run+$cores){
 		my %thr=();
 		my $current;
+		$start=time();
 		for (my $i=0;$i<$cores;$i++){
 			if (($run+$i)<@splittedseq){
 				$current=$run+$i+1;
@@ -278,7 +284,6 @@ elsif ($infile =~/\.fa/){
 				$thr{"thr$run"} = threads->create("optimizeseq",$splittedseq[$run+$i],$splittedseq{$splittedseq[$run+$i]});
 			}
 		}
-		print "processing $current of $splitcount splitted sequences...\n";
 		my @run=keys (%thr);
 		foreach (@run){
 			$thr{$_} ->join();
@@ -296,6 +301,21 @@ elsif ($infile =~/\.fa/){
 			foreach (@joinable){
 				$_->join();
 			}
+		}
+		$tend=time();
+		if ($meandiff eq 0){
+			push @timediff,$tend-$start;
+		}
+		foreach (@timediff){
+			$meandiff+=$_;
+		}
+		$meandiff=$meandiff/@timediff;
+		my $timeleft=((($splitcount-$current)/$cores)*$meandiff);
+		my $t=sec2time($timeleft);
+		print "splitted sequences[$current/$splitcount]; time spend [".sec2time($tend-$tstart)."]; time left [$t]\n";
+		$meandiff=0;
+		if (@timediff<=1000){
+			shift @timediff;
 		}
 	}
 	#clear the memery
@@ -1357,4 +1377,13 @@ sub download{
 	print "Warning: Not found $name!\nGoing to download from miRBase...\n";
 	system "wget -P $share/models/miRBase/current/ ftp://mirbase.org/pub/mirbase/CURRENT/$name.gz";
 	system "gunzip $share/models/miRBase/current/$name.gz";
+}
+sub sec2time{
+	my ($sec)=@_;
+	my $day=sprintf("%.2d", int($sec/(24*60*60)));
+	my $hour=sprintf("%.2d",($sec/(60*60))%24);
+	my $min=sprintf("%.2d",($sec/60)%60);
+	my $s=sprintf("%.2d",$sec%60);
+	my $time="$day:$hour:$min:$s";
+	return ($time);
 }
