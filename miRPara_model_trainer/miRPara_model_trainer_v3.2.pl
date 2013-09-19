@@ -157,7 +157,7 @@ if ($step !~/,2,/){
 	goto step3;
 }
 print "Calculating the parameters...";
-system "perl $mirpara --pmt ./experimental/miRBase_$version\_experimental_overall.fasta";
+system "perl $mirpara -t $cores --pmt ./experimental/miRBase_$version\_experimental_overall.fasta";
 print "Done\n";
 ################################################################################
 #step3	generate the parameters for training
@@ -199,6 +199,13 @@ my %start=();#upper start
 my %end=();#upper end
 readspe();
 my @spe=keys(%spe);
+if ($spename ne "all"){
+	@spe=();
+	if (not exists $spe{$spename}){
+		die "Error: unrecognized species name: $spename\n";
+	}
+	push @spe,$spename;
+}
 push @spe,keys(%speg);
 %fh=();
 foreach (@spe){
@@ -221,18 +228,20 @@ while (<IN>){
 		#	print "check";
 		#}
 		my @tmp=split("\t",$_);
-		my @dat=split("_",$tmp[0]);
+		my @dat=split("\:",$tmp[0]);
 		my $id=lc($dat[0]);
 		@dat=split("-",$id);
 		my $spe=$dat[0];
 		if (exists $mature{$tmp[2]}){
 			if ($mature{$tmp[2]}=~/$id/){
-				print "Extracting positive parameters for $id\n";
-				$start{$id}=$tmp[74];
-				$end{$id}=$tmp[75];
+				$start{$id}=$tmp[74].",";#position of true mature miRNA
+				$end{$id}=$tmp[75].",";
 				print {$fh{"overall"}} "$_\n";
-				print {$fh{$spe}} "$_\n";
-				print {$fh{$spe{$spe}}} "$_\n";
+				if (exists $fh{$spe}){
+					print "Extracting positive parameters for $id\n";
+					print {$fh{$spe}} "$_\n";
+					print {$fh{$spe{$spe}}} "$_\n";
+				}
 			}
 		}
 	}
@@ -439,16 +448,13 @@ sub extractpara{
 		}
 		else{
 			my @tmp=split("\t",$_);
-			my @dat=split("_",$tmp[0]);
-			my $id=$dat[0];
+			my @dat=split("\:",$tmp[0]);
+			my $id=lc($dat[0]);
 			#print "Calculating negative for $id...\n";
-			#if ($id =~ /ath/){
+			#if ($id eq "bfl-mir-2057"){
 			#	print "check";
 			#}
 			if ($id ne $mark and $mark ne ""){
-				if ($mark=~/$spe/){
-					print "Extracting negative parameters for $mark\n";
-				}
 				for ($i=1;$i<=20;$i++){
 					my $tmp=@data;
 					my @dat=split("-",$mark);
@@ -457,61 +463,76 @@ sub extractpara{
 					#	print "check\n";
 					#}
 					#if the totally pmt is less than the levels
-					if ($tmp<=$i){
-						my @tmp=@data;
-						foreach (@tmp){
-							if ($s eq $spe){
-								print {$fh{"$spe\_$i"}} "$_\n";
+					if ($tmp ne 0){
+						if ($tmp<=$i){
+							if ($mark=~/$spe/){
+								print "Extracting negative parameters for $mark\n";
 							}
-							if (exists $fh{"overall_check_$i"}){
-								if ($fh{"overall_check_$i"} eq 1){
-									print {$fh{"overall\_$i"}} "$_\n";
-								}
-							}
-							if (exists $fh{"$spe{$s}_check_$i"}){
-								if ($fh{"$spe{$s}_check_$i"} eq 1){
-									print {$fh{"$spe{$s}\_$i"}} "$_\n";
-								}
-							}
-						}
-					}
-					else{#the the pmt rows is more than levels, get one from random
-						my %random=();
-						my $j;
-						my $t=0;
-						for ($j=1;$j<=$i;$j++){
-							getrand:
-							$t++;
-							my $rand=int(rand($tmp));#need to check here
-							if (not exists $random{$rand}){
-								$random{$rand}=1;
+							my @tmp=@data;
+							foreach (@tmp){
 								if ($s eq $spe){
-									print {$fh{"$spe\_$i"}} "$data[$rand]\n";#need to check here
+									print {$fh{"$spe\_$i"}} "$_\n";
 								}
 								if (exists $fh{"overall_check_$i"}){
 									if ($fh{"overall_check_$i"} eq 1){
-										print {$fh{"overall\_$i"}} "$data[$rand]\n";
+										print {$fh{"overall\_$i"}} "$_\n";
 									}
 								}
-								if (exists $fh{"$spe{$s}_check_$i"} ){
+								if (exists $fh{"$spe{$s}_check_$i"}){
 									if ($fh{"$spe{$s}_check_$i"} eq 1){
-										print {$fh{"$spe{$s}\_$i"}} "$data[$rand]\n";
+										print {$fh{"$spe{$s}\_$i"}} "$_\n";
 									}
 								}
 							}
-							else{
-								if ($t>500){
-									die "Warning: too much runs for $s at level $i, please check\n";
+						}
+						else{#the the pmt rows is more than levels, get one from random
+							my %random=();
+							my $j;
+							my $t=0;
+							for ($j=1;$j<=$i;$j++){
+								getrand:
+								$t++;
+								my $rand=int(rand($tmp));#need to check here
+								if (not exists $random{$rand}){
+									$random{$rand}=1;
+									if ($s eq $spe){
+										print {$fh{"$spe\_$i"}} "$data[$rand]\n";#need to check here
+									}
+									if (exists $fh{"overall_check_$i"}){
+										if ($fh{"overall_check_$i"} eq 1){
+											print {$fh{"overall\_$i"}} "$data[$rand]\n";
+										}
+									}
+									if (exists $fh{"$spe{$s}_check_$i"} ){
+										if ($fh{"$spe{$s}_check_$i"} eq 1){
+											print {$fh{"$spe{$s}\_$i"}} "$data[$rand]\n";
+										}
+									}
 								}
-								goto getrand;
+								else{
+									if ($t>500){
+										die "Warning: too much runs for $s at level $i, please check\n";
+									}
+									goto getrand;
+								}
 							}
 						}
 					}
 				}
 				@data=();
 			}
-			if (exists $start{lc($id)}){
-				if (abs($tmp[74]-$start{lc($id)})>5 and abs($tmp[75]-$end{lc($id)})>5){
+			if (exists $start{$id}){
+				my $do=1;
+				$start{$id}=~s/,$//;
+				$end{$id}=~s/,$//;
+				my @start=split(",",$start{$id});
+				my @end=split(",",$end{$id});
+				for (my $i=0;$i<@start;$i++){
+					if (abs($tmp[74]-$start[$i])<=5 or abs($tmp[75]-$end[$i])<=5){
+						$do=0;
+					}
+				}
+				if ($do eq 1){
 					push @data,$_;
 				}
 			}
@@ -730,9 +751,10 @@ sub readspe{
 	}
 	open (IN,"./miRBase/$version/organisms.txt") or die "Error: Not found organisms.txt\n";
 	while (<IN>){
+		next if /^#/;
 		$_=~s/\n//;
 		my @tmp=split("\t",$_);
-		my @dat=split(";",$tmp[@tmp-1]);
+		my @dat=split(";",$tmp[3]);
 		$spe{$tmp[0]}=$dat[0];
 		$speg{$dat[0]}=$dat[0];
 	}
