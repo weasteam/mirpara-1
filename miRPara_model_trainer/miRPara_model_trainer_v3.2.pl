@@ -31,8 +31,9 @@ Example: perl $0 19 /usr/bin/miRPara.pl 1,2,3,4 12 all
 Steps:
 1	extract experimentally varified miRNA sequences
 2	calculate the miRPara parameters
-3	generate the parameters for training
-4	model training
+3	sort miRPara parameters
+4	generate the parameters for training
+5	model training
 
 Species (one of following):
 <all> - all species
@@ -160,11 +161,39 @@ print "Calculating the parameters...";
 system "perl $mirpara -t $cores --pmt ./experimental/miRBase_$version\_experimental_overall.fasta";
 print "Done\n";
 ################################################################################
-#step3	generate the parameters for training
+#step3	sort the calculated parameters
 ################################################################################
 step3:
 if ($step !~/,3,/){
 	goto step4;
+}
+print "Sorting the parameter file...\n";
+my %pmtfile;
+open (OUT,">./experimental/miRBase_$version\_experimental_overall_sorted.pmt");
+open (IN,"./experimental/miRBase_$version\_experimental_overall.pmt");
+while (<IN>){
+	$_=~s/\n//;
+	if ($_=~/^#/){
+		print OUT "$_\n";
+	}
+	else{
+		my @tmp=split("\t",$_);
+		$pmtfile{$tmp[0]}=$_;
+	}
+}
+close IN;
+my @pmtfile=sort(keys(%pmtfile));
+foreach (@pmtfile){
+	print OUT "$pmtfile{$_}\n";
+}
+close OUT;
+print "Done\n";
+################################################################################
+#step4	generate the parameters for training
+################################################################################
+step4:
+if ($step !~/,4,/){
+	goto step5;
 }
 print "Generating the training parameters...\n";
 my $out="training_parameters_$version";
@@ -213,7 +242,7 @@ foreach (@spe){
 	open ($fh{$spe},">./training_parameters_$version/$spe.pmt");
 }
 open ($fh{"overall"},">./training_parameters_$version/overall.pmt");
-open (IN,"./experimental/miRBase_$version\_experimental_overall.pmt");
+open (IN,"./experimental/miRBase_$version\_experimental_overall_sorted.pmt");
 while (<IN>){
 	$_=~s/\n//;
 	if ($_=~/^#/){
@@ -299,10 +328,10 @@ for ($run=0;$run<@spe;$run=$run+$cores){
 	}
 }
 ################################################################################
-#step4	model training
+#step5	model training
 ################################################################################
-step4:
-if ($step !~/,4,/){
+step5:
+if ($step !~/,5,/){
 	goto stepend;
 }
 $out="models_$version";
@@ -426,7 +455,7 @@ sub extractpara{
 	my ($fh,$spe)=@_;
 	my %fh;
 	$fh="pmt$fh";
-	open ($fh,"./experimental/miRBase_$version\_experimental_overall.pmt");
+	open ($fh,"./experimental/miRBase_$version\_experimental_overall_sorted.pmt");
 	while (<$fh>){
 		$_=~s/\n//;
 		if ($_=~/^#/){
@@ -454,6 +483,7 @@ sub extractpara{
 			#if ($id eq "bfl-mir-2057"){
 			#	print "check";
 			#}
+			# the $mark is hypothesis the input files is sorted based on the miRNA names
 			if ($id ne $mark and $mark ne ""){
 				for ($i=1;$i<=20;$i++){
 					my $tmp=@data;
