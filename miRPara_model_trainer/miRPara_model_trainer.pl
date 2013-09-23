@@ -39,6 +39,7 @@ Species (one of following):
 <all> - all species
 <species short name> - eg. hsa
 
+Version 3.3
 };
 our $version=shift or die $usage;
 if ($version<13){
@@ -197,7 +198,24 @@ if ($step !~/,4,/){
 }
 print "Generating the training parameters...\n";
 my $out="training_parameters_$version";
-if (not -e $out){
+if (-e $out){
+	check:
+	print "Warning: $out is exist, do you want to remove the folder? (yes/no)";
+	my $check=<>;
+	$check=~s/\n//;
+	if (lc($check) eq "yes" or $check eq ""){
+		print "removing the $out folder...\n";
+		system "rm -rf $out";
+		system "mkdir $out";
+	}
+	elsif (lc($check) eq "no"){
+		print "The same model will be overwritten!\n";
+	}
+	else{
+		goto check;
+	}
+}
+else{
 	system "mkdir $out";
 }
 #unzip the data
@@ -391,6 +409,9 @@ foreach (@tmp){
 	if ($group{$_} eq 21){#total number of files, include one positive
 		push @group,$_;
 	}
+	else{
+		print "Warning: no parameter data for $_\n";
+	}
 }
 if ($spename ne "all"){
 	@group=();
@@ -416,7 +437,7 @@ foreach (@group){
 		@svmpmt=pmt($spe{"overall"});
 	}
 	#start training
-	#training($group,6);
+	#training($group,1);
 	#for (my $i=1;$i<=20;$i++){
 	#	training("Viridiplantae",$i);
 	#}
