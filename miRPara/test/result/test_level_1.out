@@ -1,0 +1,79 @@
+#miRNA results predicted by miRPara6.3
+#By Yonggan Wu and Simon Rayner
+#Report bugs to Yonggan Wu (weasteam@gmail.com) or Dr. Simon Rayner (sraynere@wh.iov.cn)
+#Bioinformatics Group, State Key Laboratory of Virology, Wuhan Institute of Virology, Chinese Academy of Sciences.
+#The Department of Biological Sciences, Texas Tech University.
+#Homepage: http://www.whiov.ac.cn/bioinformatics/mirpara
+#Google Project: http://code.google.com/p/mirpara/
+#Facebook: https://www.facebook.com/mirpara2009
+#model: /home/yonggan/Documents/mirpara/miRPara/models/overall_1.model
+#cutoff: 0.8
+#foldlength: 521
+#overlaplength: 176
+#
+#priid	priseq	miid	miseq	strand	SVM_probability	miRBase
+cel-let-7:1-99	uacacuguggaUCCGGUGAGGUAGUAGGUUGUAuaguuuggaauauuaccaccggugaacuaugcaauuuucuaccuuaccggagacagaacucuucga	cel-let-7:1-99:12_22	UCCGGUGAGGUAGUAGGUUGUA	5P	0.820835	
+cel-let-7:1-99	uacacuguggaucCGGUGAGGUAGUAGGUUGUAUAGUuuggaauauuaccaccggugaacuaugcaauuuucuaccuuaccggagacagaacucuucga	cel-let-7:1-99:14_24	CGGUGAGGUAGUAGGUUGUAUAGU	5P	0.84628	
+cel-let-7:1-99	uacacuguggauccGGUGAGGUAGUAGGUUGUAUAguuuggaauauuaccaccggugaacuaugcaauuuucuaccuuaccggagacagaacucuucga	cel-let-7:1-99:15_21	GGUGAGGUAGUAGGUUGUAUA	5P	0.804329	
+cel-let-7:1-99	uacacuguggauccGGUGAGGUAGUAGGUUGUAUAGuuuggaauauuaccaccggugaacuaugcaauuuucuaccuuaccggagacagaacucuucga	cel-let-7:1-99:15_22	GGUGAGGUAGUAGGUUGUAUAG	5P	0.900092	
+cel-let-7:1-99	uacacuguggauccGGUGAGGUAGUAGGUUGUAUAGUuuggaauauuaccaccggugaacuaugcaauuuucuaccuuaccggagacagaacucuucga	cel-let-7:1-99:15_23	GGUGAGGUAGUAGGUUGUAUAGU	5P	0.941204	
+cel-let-7:1-99	uacacuguggauccGGUGAGGUAGUAGGUUGUAUAGUUuggaauauuaccaccggugaacuaugcaauuuucuaccuuaccggagacagaacucuucga	cel-let-7:1-99:15_24	GGUGAGGUAGUAGGUUGUAUAGUU	5P	0.94797	
+cel-let-7:1-99	uacacuguggauccgGUGAGGUAGUAGGUUGUAUAguuuggaauauuaccaccggugaacuaugcaauuuucuaccuuaccggagacagaacucuucga	cel-let-7:1-99:16_20	GUGAGGUAGUAGGUUGUAUA	5P	0.800588	
+cel-let-7:1-99	uacacuguggauccgGUGAGGUAGUAGGUUGUAUAGuuuggaauauuaccaccggugaacuaugcaauuuucuaccuuaccggagacagaacucuucga	cel-let-7:1-99:16_21	GUGAGGUAGUAGGUUGUAUAG	5P	0.91398	
+cel-let-7:1-99	uacacuguggauccgGUGAGGUAGUAGGUUGUAUAGUuuggaauauuaccaccggugaacuaugcaauuuucuaccuuaccggagacagaacucuucga	cel-let-7:1-99:16_22	GUGAGGUAGUAGGUUGUAUAGU	5P	0.942269	
+cel-let-7:1-99	uacacuguggauccgGUGAGGUAGUAGGUUGUAUAGUUuggaauauuaccaccggugaacuaugcaauuuucuaccuuaccggagacagaacucuucga	cel-let-7:1-99:16_23	GUGAGGUAGUAGGUUGUAUAGUU	5P	0.953472	
+cel-let-7:1-99	uacacuguggauccgGUGAGGUAGUAGGUUGUAUAGUUUggaauauuaccaccggugaacuaugcaauuuucuaccuuaccggagacagaacucuucga	cel-let-7:1-99:16_24	GUGAGGUAGUAGGUUGUAUAGUUU	5P	0.8657	
+cel-let-7:1-99	uacacuguggauccggUGAGGUAGUAGGUUGUAUAGuuuggaauauuaccaccggugaacuaugcaauuuucuaccuuaccggagacagaacucuucga	cel-let-7:1-99:17_20	UGAGGUAGUAGGUUGUAUAG	5P	0.8962	let-7-5p;let-7a
+cel-let-7:1-99	uacacuguggauccggUGAGGUAGUAGGUUGUAUAGUuuggaauauuaccaccggugaacuaugcaauuuucuaccuuaccggagacagaacucuucga	cel-let-7:1-99:17_21	UGAGGUAGUAGGUUGUAUAGU	5P	0.926449	let-7-5p;let-7a-5p
+cel-let-7:1-99	uacacuguggauccggUGAGGUAGUAGGUUGUAUAGUUuggaauauuaccaccggugaacuaugcaauuuucuaccuuaccggagacagaacucuucga	cel-let-7:1-99:17_22	UGAGGUAGUAGGUUGUAUAGUU	5P	0.937481	let-7-5p;let-7a-5p;let-7j-5p
+cel-let-7:1-99	uacacuguggauccggUGAGGUAGUAGGUUGUAUAGUUUggaauauuaccaccggugaacuaugcaauuuucuaccuuaccggagacagaacucuucga	cel-let-7:1-99:17_23	UGAGGUAGUAGGUUGUAUAGUUU	5P	0.909269	let-7-5p
+cel-let-7:1-99	uacacuguggauccggUGAGGUAGUAGGUUGUAUAGUUUGgaauauuaccaccggugaacuaugcaauuuucuaccuuaccggagacagaacucuucga	cel-let-7:1-99:17_24	UGAGGUAGUAGGUUGUAUAGUUUG	5P	0.944254	
+cel-let-7:1-99	uacacuguggauccgguGAGGUAGUAGGUUGUAUAGUuuggaauauuaccaccggugaacuaugcaauuuucuaccuuaccggagacagaacucuucga	cel-let-7:1-99:18_20	GAGGUAGUAGGUUGUAUAGU	5P	0.927285	
+cel-let-7:1-99	uacacuguggauccgguGAGGUAGUAGGUUGUAUAGUUuggaauauuaccaccggugaacuaugcaauuuucuaccuuaccggagacagaacucuucga	cel-let-7:1-99:18_21	GAGGUAGUAGGUUGUAUAGUU	5P	0.937266	
+cel-let-7:1-99	uacacuguggauccgguGAGGUAGUAGGUUGUAUAGUUUggaauauuaccaccggugaacuaugcaauuuucuaccuuaccggagacagaacucuucga	cel-let-7:1-99:18_22	GAGGUAGUAGGUUGUAUAGUUU	5P	0.938485	
+cel-let-7:1-99	uacacuguggauccgguGAGGUAGUAGGUUGUAUAGUUUGgaauauuaccaccggugaacuaugcaauuuucuaccuuaccggagacagaacucuucga	cel-let-7:1-99:18_23	GAGGUAGUAGGUUGUAUAGUUUG	5P	0.954351	
+cel-let-7:1-99	uacacuguggauccgguGAGGUAGUAGGUUGUAUAGUUUGGaauauuaccaccggugaacuaugcaauuuucuaccuuaccggagacagaacucuucga	cel-let-7:1-99:18_24	GAGGUAGUAGGUUGUAUAGUUUGG	5P	0.949764	
+cel-let-7:1-99	uacacuguggauccggugAGGUAGUAGGUUGUAUAGUUuggaauauuaccaccggugaacuaugcaauuuucuaccuuaccggagacagaacucuucga	cel-let-7:1-99:19_20	AGGUAGUAGGUUGUAUAGUU	5P	0.907191	
+cel-let-7:1-99	uacacuguggauccggugAGGUAGUAGGUUGUAUAGUUUggaauauuaccaccggugaacuaugcaauuuucuaccuuaccggagacagaacucuucga	cel-let-7:1-99:19_21	AGGUAGUAGGUUGUAUAGUUU	5P	0.930047	
+cel-let-7:1-99	uacacuguggauccggugAGGUAGUAGGUUGUAUAGUUUGgaauauuaccaccggugaacuaugcaauuuucuaccuuaccggagacagaacucuucga	cel-let-7:1-99:19_22	AGGUAGUAGGUUGUAUAGUUUG	5P	0.926857	
+cel-let-7:1-99	uacacuguggauccggugAGGUAGUAGGUUGUAUAGUUUGGaauauuaccaccggugaacuaugcaauuuucuaccuuaccggagacagaacucuucga	cel-let-7:1-99:19_23	AGGUAGUAGGUUGUAUAGUUUGG	5P	0.934917	
+cel-let-7:1-99	uacacuguggauccggugaGGUAGUAGGUUGUAUAGUUUggaauauuaccaccggugaacuaugcaauuuucuaccuuaccggagacagaacucuucga	cel-let-7:1-99:20_20	GGUAGUAGGUUGUAUAGUUU	5P	0.945876	
+cel-let-7:1-99	uacacuguggauccggugaGGUAGUAGGUUGUAUAGUUUGgaauauuaccaccggugaacuaugcaauuuucuaccuuaccggagacagaacucuucga	cel-let-7:1-99:20_21	GGUAGUAGGUUGUAUAGUUUG	5P	0.952291	
+cel-let-7:1-99	uacacuguggauccggugaGGUAGUAGGUUGUAUAGUUUGGaauauuaccaccggugaacuaugcaauuuucuaccuuaccggagacagaacucuucga	cel-let-7:1-99:20_22	GGUAGUAGGUUGUAUAGUUUGG	5P	0.950141	
+cel-let-7:1-99	uacacuguggauccggugagGUAGUAGGUUGUAUAGUUUGgaauauuaccaccggugaacuaugcaauuuucuaccuuaccggagacagaacucuucga	cel-let-7:1-99:21_20	GUAGUAGGUUGUAUAGUUUG	5P	0.940583	
+cel-let-7:1-99	uacacuguggauccggugagGUAGUAGGUUGUAUAGUUUGGaauauuaccaccggugaacuaugcaauuuucuaccuuaccggagacagaacucuucga	cel-let-7:1-99:21_21	GUAGUAGGUUGUAUAGUUUGG	5P	0.939897	
+cel-let-7:1-99	uacacuguggauccggugagGUAGUAGGUUGUAUAGUUUGGAAUauuaccaccggugaacuaugcaauuuucuaccuuaccggagacagaacucuucga	cel-let-7:1-99:21_24	GUAGUAGGUUGUAUAGUUUGGAAU	5P	0.905327	
+cel-let-7:1-99	uacacuguggauccggugagguaguagguuguauaguuuggaauauuaccaccGGUGAACUAUGCAAUUUUCUACCuuaccggagacagaacucuucga	cel-let-7:1-99:54_23	GGUGAACUAUGCAAUUUUCUACC	3P	0.921092	
+cel-let-7:1-99	uacacuguggauccggugagguaguagguuguauaguuuggaauauuaccaccGGUGAACUAUGCAAUUUUCUACCUuaccggagacagaacucuucga	cel-let-7:1-99:54_24	GGUGAACUAUGCAAUUUUCUACCU	3P	0.928999	
+cel-let-7:1-99	uacacuguggauccggugagguaguagguuguauaguuuggaauauuaccaccgGUGAACUAUGCAAUUUUCUACcuuaccggagacagaacucuucga	cel-let-7:1-99:55_21	GUGAACUAUGCAAUUUUCUAC	3P	0.864897	
+cel-let-7:1-99	uacacuguggauccggugagguaguagguuguauaguuuggaauauuaccaccgGUGAACUAUGCAAUUUUCUACCuuaccggagacagaacucuucga	cel-let-7:1-99:55_22	GUGAACUAUGCAAUUUUCUACC	3P	0.955562	
+cel-let-7:1-99	uacacuguggauccggugagguaguagguuguauaguuuggaauauuaccaccgGUGAACUAUGCAAUUUUCUACCUuaccggagacagaacucuucga	cel-let-7:1-99:55_23	GUGAACUAUGCAAUUUUCUACCU	3P	0.939625	
+cel-let-7:1-99	uacacuguggauccggugagguaguagguuguauaguuuggaauauuaccaccgGUGAACUAUGCAAUUUUCUACCUUaccggagacagaacucuucga	cel-let-7:1-99:55_24	GUGAACUAUGCAAUUUUCUACCUU	3P	0.938782	
+cel-let-7:1-99	uacacuguggauccggugagguaguagguuguauaguuuggaauauuaccaccggUGAACUAUGCAAUUUUCUACcuuaccggagacagaacucuucga	cel-let-7:1-99:56_20	UGAACUAUGCAAUUUUCUAC	3P	0.828758	
+cel-let-7:1-99	uacacuguggauccggugagguaguagguuguauaguuuggaauauuaccaccggUGAACUAUGCAAUUUUCUACCuuaccggagacagaacucuucga	cel-let-7:1-99:56_21	UGAACUAUGCAAUUUUCUACC	3P	0.941344	
+cel-let-7:1-99	uacacuguggauccggugagguaguagguuguauaguuuggaauauuaccaccggUGAACUAUGCAAUUUUCUACCUuaccggagacagaacucuucga	cel-let-7:1-99:56_22	UGAACUAUGCAAUUUUCUACCU	3P	0.927987	
+cel-let-7:1-99	uacacuguggauccggugagguaguagguuguauaguuuggaauauuaccaccggUGAACUAUGCAAUUUUCUACCUUaccggagacagaacucuucga	cel-let-7:1-99:56_23	UGAACUAUGCAAUUUUCUACCUU	3P	0.927539	
+cel-let-7:1-99	uacacuguggauccggugagguaguagguuguauaguuuggaauauuaccaccggUGAACUAUGCAAUUUUCUACCUUAccggagacagaacucuucga	cel-let-7:1-99:56_24	UGAACUAUGCAAUUUUCUACCUUA	3P	0.906037	
+cel-let-7:1-99	uacacuguggauccggugagguaguagguuguauaguuuggaauauuaccaccgguGAACUAUGCAAUUUUCUACCuuaccggagacagaacucuucga	cel-let-7:1-99:57_20	GAACUAUGCAAUUUUCUACC	3P	0.902699	
+cel-let-7:1-99	uacacuguggauccggugagguaguagguuguauaguuuggaauauuaccaccgguGAACUAUGCAAUUUUCUACCUuaccggagacagaacucuucga	cel-let-7:1-99:57_21	GAACUAUGCAAUUUUCUACCU	3P	0.910663	
+cel-let-7:1-99	uacacuguggauccggugagguaguagguuguauaguuuggaauauuaccaccgguGAACUAUGCAAUUUUCUACCUUaccggagacagaacucuucga	cel-let-7:1-99:57_22	GAACUAUGCAAUUUUCUACCUU	3P	0.912309	
+cel-let-7:1-99	uacacuguggauccggugagguaguagguuguauaguuuggaauauuaccaccgguGAACUAUGCAAUUUUCUACCUUAccggagacagaacucuucga	cel-let-7:1-99:57_23	GAACUAUGCAAUUUUCUACCUUA	3P	0.899774	
+cel-let-7:1-99	uacacuguggauccggugagguaguagguuguauaguuuggaauauuaccaccgguGAACUAUGCAAUUUUCUACCUUACcggagacagaacucuucga	cel-let-7:1-99:57_24	GAACUAUGCAAUUUUCUACCUUAC	3P	0.933216	
+cel-let-7:1-99	uacacuguggauccggugagguaguagguuguauaguuuggaauauuaccaccggugAACUAUGCAAUUUUCUACCUuaccggagacagaacucuucga	cel-let-7:1-99:58_20	AACUAUGCAAUUUUCUACCU	3P	0.894228	
+cel-let-7:1-99	uacacuguggauccggugagguaguagguuguauaguuuggaauauuaccaccggugAACUAUGCAAUUUUCUACCUUaccggagacagaacucuucga	cel-let-7:1-99:58_21	AACUAUGCAAUUUUCUACCUU	3P	0.917251	
+cel-let-7:1-99	uacacuguggauccggugagguaguagguuguauaguuuggaauauuaccaccggugAACUAUGCAAUUUUCUACCUUAccggagacagaacucuucga	cel-let-7:1-99:58_22	AACUAUGCAAUUUUCUACCUUA	3P	0.916936	
+cel-let-7:1-99	uacacuguggauccggugagguaguagguuguauaguuuggaauauuaccaccggugAACUAUGCAAUUUUCUACCUUACcggagacagaacucuucga	cel-let-7:1-99:58_23	AACUAUGCAAUUUUCUACCUUAC	3P	0.943446	
+cel-let-7:1-99	uacacuguggauccggugagguaguagguuguauaguuuggaauauuaccaccggugAACUAUGCAAUUUUCUACCUUACCggagacagaacucuucga	cel-let-7:1-99:58_24	AACUAUGCAAUUUUCUACCUUACC	3P	0.964296	
+cel-let-7:1-99	uacacuguggauccggugagguaguagguuguauaguuuggaauauuaccaccggugaACUAUGCAAUUUUCUACCUUaccggagacagaacucuucga	cel-let-7:1-99:59_20	ACUAUGCAAUUUUCUACCUU	3P	0.912258	
+cel-let-7:1-99	uacacuguggauccggugagguaguagguuguauaguuuggaauauuaccaccggugaACUAUGCAAUUUUCUACCUUAccggagacagaacucuucga	cel-let-7:1-99:59_21	ACUAUGCAAUUUUCUACCUUA	3P	0.9196	
+cel-let-7:1-99	uacacuguggauccggugagguaguagguuguauaguuuggaauauuaccaccggugaACUAUGCAAUUUUCUACCUUACcggagacagaacucuucga	cel-let-7:1-99:59_22	ACUAUGCAAUUUUCUACCUUAC	3P	0.937721	
+cel-let-7:1-99	uacacuguggauccggugagguaguagguuguauaguuuggaauauuaccaccggugaACUAUGCAAUUUUCUACCUUACCggagacagaacucuucga	cel-let-7:1-99:59_23	ACUAUGCAAUUUUCUACCUUACC	3P	0.955071	
+cel-let-7:1-99	uacacuguggauccggugagguaguagguuguauaguuuggaauauuaccaccggugaACUAUGCAAUUUUCUACCUUACCGgagacagaacucuucga	cel-let-7:1-99:59_24	ACUAUGCAAUUUUCUACCUUACCG	3P	0.967816	
+cel-let-7:1-99	uacacuguggauccggugagguaguagguuguauaguuuggaauauuaccaccggugaaCUAUGCAAUUUUCUACCUUAccggagacagaacucuucga	cel-let-7:1-99:60_20	CUAUGCAAUUUUCUACCUUA	3P	0.904574	
+cel-let-7:1-99	uacacuguggauccggugagguaguagguuguauaguuuggaauauuaccaccggugaaCUAUGCAAUUUUCUACCUUACcggagacagaacucuucga	cel-let-7:1-99:60_21	CUAUGCAAUUUUCUACCUUAC	3P	0.919509	
+cel-let-7:1-99	uacacuguggauccggugagguaguagguuguauaguuuggaauauuaccaccggugaaCUAUGCAAUUUUCUACCUUACCggagacagaacucuucga	cel-let-7:1-99:60_22	CUAUGCAAUUUUCUACCUUACC	3P	0.930125	
+cel-let-7:1-99	uacacuguggauccggugagguaguagguuguauaguuuggaauauuaccaccggugaaCUAUGCAAUUUUCUACCUUACCGgagacagaacucuucga	cel-let-7:1-99:60_23	CUAUGCAAUUUUCUACCUUACCG	3P	0.965941	
+cel-let-7:1-99	uacacuguggauccggugagguaguagguuguauaguuuggaauauuaccaccggugaacUAUGCAAUUUUCUACCUUACcggagacagaacucuucga	cel-let-7:1-99:61_20	UAUGCAAUUUUCUACCUUAC	3P	0.878126	
+cel-let-7:1-99	uacacuguggauccggugagguaguagguuguauaguuuggaauauuaccaccggugaacUAUGCAAUUUUCUACCUUACCggagacagaacucuucga	cel-let-7:1-99:61_21	UAUGCAAUUUUCUACCUUACC	3P	0.885057	
+cel-let-7:1-99	uacacuguggauccggugagguaguagguuguauaguuuggaauauuaccaccggugaacUAUGCAAUUUUCUACCUUACCGgagacagaacucuucga	cel-let-7:1-99:61_22	UAUGCAAUUUUCUACCUUACCG	3P	0.934285	
+cel-let-7:1-99	uacacuguggauccggugagguaguagguuguauaguuuggaauauuaccaccggugaacUAUGCAAUUUUCUACCUUACCGGagacagaacucuucga	cel-let-7:1-99:61_23	UAUGCAAUUUUCUACCUUACCGG	3P	0.855507	
