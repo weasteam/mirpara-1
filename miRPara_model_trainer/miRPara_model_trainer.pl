@@ -1,16 +1,6 @@
 #! /usr/bin/perl
 #	by Yonggan Wu (weasteam@gmail.com)
 #	by Simon Rayner ()
-#	Version: 2.0 (2012-10-02 15:44:02 )
-#	version 2.1 (2012-10-03 17:52:47 ): fix the bug to download miRBase17 data
-#	version 2.2 (2012-10-09 12:51:39 ): ignore empty data set, fix a bug for species group
-#	version 2.3 (2012-10-12 18:30:07 ): fix a bug that not able to produce parameters for some species
-#	version 3.0 (2012-11-17 09:40:06 ): use libsvm to train
-#										: able to run the whole process separatly for different step
-#										: able to run for one specific species
-#										: multiple core support
-#	version 3.1 (2012-11-23 20:21:12 ): enable multicore processing for the parameter calculation
-#	version 3.2 (2012-11-24 15:32:17 ): fix a bug the terminal the program after step 3
 #	The script will prepare the data for SVM training from miRBase release
 #	Changes since last version: calculate the parameters first and then group
 ################################################################################

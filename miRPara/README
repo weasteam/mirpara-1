@@ -1,7 +1,8 @@
-This is README for miRPara.pl version 6.2
-
 For Documentation about INSTALL, USAGE, please see:
 http://code.google.com/p/mirpara/wiki/miRPara
+
+To test the miRPara.pl with the following command and compare the result to the files in ./test/result/
+perl miRPara.pl ./test/test.fa
 
 Report bugs to Yonggan Wu (weasteam@gmail.com) or Dr. Simon Rayner (raynere@wh.iov.cn)
 
