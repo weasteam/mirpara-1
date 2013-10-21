@@ -481,7 +481,7 @@ sub dofold{
    #1	received a title and a cuted ~500 seq;
    #2	do unafuld and return a str
    my ($seq)=@_;
-   my $rand=int(rand(9999)).int(rand(9999));
+   my $rand=randomID(20);
    my $fh="fold".$rand;
    open ($fh,">$rand");
    print {$fh} ">$rand\n$seq\n";
@@ -1256,7 +1256,7 @@ sub predict{
    my (%para)=@_;
    my @tmp;
    my @pmt=pmt($organisms{lc($species)});
-   my $key=int(rand(999999999));
+   my $key=randomID(20);
    my $fh="predict".$key;
    open ($fh,">$key.txt");
    my $printdata="2";
@@ -1386,4 +1386,10 @@ sub sec2time{
 	my $s=sprintf("%.2d",$sec%60);
 	my $time="$day:$hour:$min:$s";
 	return ($time);
+}
+sub randomID{
+        my ($len)=@_;
+        my @set = ('a' ..'z', 'A' .. 'F',0 .. 9);
+        my $str = join '' => map $set[rand @set], 1 .. $len;
+        return $str;
 }
