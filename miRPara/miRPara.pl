@@ -272,7 +272,6 @@ elsif ($infile =~/\.fa/){
 	my $tend=time();
 	my $start=time();
 	my @timediff=();
-	my $meandiff=0;
 	for (my $run=0;$run<@splittedseq;$run=$run+$cores){
 		my %thr=();
 		my $current;
@@ -303,20 +302,10 @@ elsif ($infile =~/\.fa/){
 			}
 		}
 		$tend=time();
-		if ($meandiff eq 0){
-			push @timediff,$tend-$start;
-		}
-		foreach (@timediff){
-			$meandiff+=$_;
-		}
-		$meandiff=$meandiff/@timediff;
-		my $timeleft=((($splitcount-$current)/$cores)*$meandiff);
-		my $t=sec2time($timeleft);
-		print "splitted sequences[$current/$splitcount]; time spend [".sec2time($tend-$tstart)."]; time left [$t]\n";
-		$meandiff=0;
-		if (@timediff<=1000){
-			shift @timediff;
-		}
+		my $t=sec2time((($tend-$tstart)/$current)*($splitcount-$current));
+		my $p=$current/$splitcount;
+		$p=sprintf("%.2f", $p*100)."%";
+		print "splitted sequences[$current/$splitcount] [$p] | time spend [".sec2time($tend-$tstart)."] | time left [$t]\n";
 	}
 	#clear the memery
 	print "outputing the parameter data...\n";
